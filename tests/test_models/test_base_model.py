@@ -2,15 +2,38 @@
 """
 Module for BaseModel unittest
 """
-
+import os
 import unittest
-from models import BaseModel
+from models.base_model import BaseModel
 
-class TestBasemosel(unittest.TestCase):
+
+
+class TestBasemodel(unittest.TestCase):
     """
-     Unittest for BaseModel
+    Unittest for BaseModel
     """
 
+    def setUp(self):
+        """
+        Setup for temporary file path
+        """
+        try:
+            os.rename("file.json", "tmp.json")
+        except FileNotFoundError:
+            pass
+
+    def tearDown(self):
+        """
+        Tear down for temporary file path
+        """
+        try:
+            os.remove("file.json")
+        except FileNotFoundError:
+            pass
+        try:
+            os.rename("tmp.json", "file.json")
+        except FileNotFoundError:
+            pass
     def test_init(self):
         """
         Test for init
@@ -23,15 +46,15 @@ class TestBasemosel(unittest.TestCase):
 
     def test_save(self):
         """
-        Test for the save method
+        Test for save method
         """
-       my_model = BaseModel()
+        my_model = BaseModel()
 
-       initial_updated_at = my_model.updated_at
+        initial_updated_at = my_model.updated_at
 
-       current_updated_at = my_model.save()
+        current_updated_at = my_model.save()
 
-       self.assertNotEqual(initial_updated_at, current_updated_at)
+        self.assertNotEqual(initial_updated_at, current_updated_at)
 
     def test_to_dict(self):
         """
@@ -48,9 +71,10 @@ class TestBasemosel(unittest.TestCase):
         self.assertEqual(my_model_dict['created_at'], my_model.created_at.isoformat())
         self.assertEqual(my_model_dict["updated_at"], my_model.created_at.isoformat())
 
+
     def test_str(self):
         """
-        Test for test_str method
+        Test for string representation
         """
         my_model = BaseModel()
 
@@ -61,5 +85,5 @@ class TestBasemosel(unittest.TestCase):
         self.assertIn(str(my_model.__dict__), str(my_model))
 
 
-if __name__ == "__name__()":
+if __name__ == "__main__":
     unittest.main()
